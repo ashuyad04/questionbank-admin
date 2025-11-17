@@ -15,7 +15,7 @@ import SuperAdmin from "./pages/SuperAdmin";
 
 // Admin Panel Inner Pages
 import AdminsManagement from "./pages/admins/AdminsManagement";
-import UploadPaper from "./pages/upload/UploadPaper";
+import UploadPaper from "./pages/Upload/UploadPaper";
 import ManagePapers from "./pages/papers/ManagePapers";
 import ActivityLogs from "./pages/logs/ActivityLogs";
 
