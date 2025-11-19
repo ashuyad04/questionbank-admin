@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../integrations/supabase/client";
+import Layout from "../components/Layout";
 
 export default function AdminRequests() {
   const [requests, setRequests] = useState([]);
@@ -22,10 +23,8 @@ export default function AdminRequests() {
       {
         email: req.email,
         name: req.name,
-        branch: req.branch,
-        semester: req.semester,
-        rollno: req.rollno,
         role: "admin",
+        uid: null,
       },
     ]);
 
@@ -34,7 +33,7 @@ export default function AdminRequests() {
       .update({ status: "approved" })
       .eq("id", req.id);
 
-    alert("Request approved.");
+    alert("Request approved!");
     loadRequests();
   };
 
@@ -44,7 +43,7 @@ export default function AdminRequests() {
       .update({ status: "rejected" })
       .eq("id", id);
 
-    alert("Request rejected.");
+    alert("Request rejected!");
     loadRequests();
   };
 
@@ -54,14 +53,14 @@ export default function AdminRequests() {
   };
 
   return (
-    <div className="min-h-screen p-10">
-      <h1 className="text-3xl font-bold mb-6">Admin Access Requests</h1>
+    <Layout>
+      <h1 className="text-2xl font-bold mb-6">Admin Requests</h1>
 
       {requests.length === 0 && <p>No requests yet.</p>}
 
       <div className="space-y-4">
         {requests.map((req) => (
-          <div key={req.id} className="border p-5 rounded-lg">
+          <div key={req.id} className="border p-4 rounded-lg">
             <p><strong>Name:</strong> {req.name}</p>
             <p><strong>Email:</strong> {req.email}</p>
             <p><strong>Branch:</strong> {req.branch}</p>
@@ -73,18 +72,32 @@ export default function AdminRequests() {
             <div className="flex gap-3 mt-4">
               {req.status === "pending" && (
                 <>
-                  <button onClick={() => approveRequest(req)} className="px-4 py-2 bg-green-600 text-white rounded-lg">Approve</button>
-                  <button onClick={() => rejectRequest(req.id)} className="px-4 py-2 bg-yellow-600 text-white rounded-lg">Reject</button>
+                  <button
+                    onClick={() => approveRequest(req)}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    onClick={() => rejectRequest(req.id)}
+                    className="px-4 py-2 bg-yellow-600 text-white rounded-lg"
+                  >
+                    Reject
+                  </button>
                 </>
               )}
 
-              <button onClick={() => deleteRequest(req.id)} className="px-4 py-2 bg-red-600 text-white rounded-lg">
+              <button
+                onClick={() => deleteRequest(req.id)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+              >
                 Delete
               </button>
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </Layout>
   );
 }

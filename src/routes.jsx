@@ -14,15 +14,16 @@ import NotAuthorized from "./pages/NotAuthorized";
 export default function RoutesFile() {
   return (
     <Routes>
-      {/* Public pages */}
+
+      {/* PUBLIC PAGES */}
       <Route path="/" element={<PublicHome />} />
       <Route path="/browse" element={<PublicBrowse />} />
       <Route path="/request-access" element={<RequestAccess />} />
 
-      {/* Admin Login */}
+      {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Auth />} />
 
-      {/* Admin Pages */}
+      {/* ADMIN DASHBOARD */}
       <Route
         path="/admin/dashboard"
         element={
@@ -32,6 +33,7 @@ export default function RoutesFile() {
         }
       />
 
+      {/* SUPER ADMIN PANEL */}
       <Route
         path="/admin/requests"
         element={
