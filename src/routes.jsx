@@ -1,38 +1,30 @@
-// src/routes.jsx
-
 import { Routes, Route } from "react-router-dom";
 
-// Public Pages
+import PublicHome from "./pages/PublicHome";
+import PublicBrowse from "./pages/PublicBrowse";
+import RequestAccess from "./pages/RequestAccess";
+
 import Auth from "./pages/Auth";
-import BrowsePapers from "./pages/student/BrowsePapers";
-import NotAuthorized from "./pages/NotAuthorized";
-
-// Dashboard (Admins + Super Admin)
 import Dashboard from "./pages/Dashboard";
+import AdminRequests from "./pages/AdminRequests";
 
-// Super Admin layout
-import SuperAdmin from "./pages/SuperAdmin";
-
-// Admin Panel Inner Pages
-import AdminsManagement from "./pages/admins/AdminsManagement";
-import UploadPaper from "./pages/Upload/UploadPaper";
-import ManagePapers from "./pages/papers/ManagePapers";
-import ActivityLogs from "./pages/logs/ActivityLogs";
-
-// Route Protection
 import ProtectedRoute from "./components/ProtectedRoute";
+import NotAuthorized from "./pages/NotAuthorized";
 
 export default function RoutesFile() {
   return (
     <Routes>
+      {/* Public pages */}
+      <Route path="/" element={<PublicHome />} />
+      <Route path="/browse" element={<PublicBrowse />} />
+      <Route path="/request-access" element={<RequestAccess />} />
 
-      {/* PUBLIC ROUTES */}
-      <Route path="/" element={<Auth />} />
-      <Route path="/browse" element={<BrowsePapers />} />
+      {/* Admin Login */}
+      <Route path="/admin/login" element={<Auth />} />
 
-      {/* ADMIN + SUPER ADMIN DASHBOARD */}
+      {/* Admin Pages */}
       <Route
-        path="/dashboard"
+        path="/admin/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />
@@ -40,34 +32,16 @@ export default function RoutesFile() {
         }
       />
 
-      {/* SUPER ADMIN PANEL */}
       <Route
-        path="/admin-panel"
+        path="/admin/requests"
         element={
-          <ProtectedRoute superAdminOnly>
-            <SuperAdmin />
+          <ProtectedRoute superAdminOnly={true}>
+            <AdminRequests />
           </ProtectedRoute>
         }
-      >
-        {/* Default message */}
-        <Route index element={<div>Select an item from the sidebar</div>} />
+      />
 
-        {/* Manage Admins */}
-        <Route path="admins" element={<AdminsManagement />} />
-
-        {/* Upload Papers */}
-        <Route path="upload" element={<UploadPaper />} />
-
-        {/* NEW: Manage Uploaded Papers */}
-        <Route path="papers" element={<ManagePapers />} />
-
-        {/* Activity Logs */}
-        <Route path="logs" element={<ActivityLogs />} />
-      </Route>
-
-      {/* ACCESS DENIED */}
       <Route path="/no-access" element={<NotAuthorized />} />
-
     </Routes>
   );
 }

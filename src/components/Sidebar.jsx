@@ -44,7 +44,7 @@ export default function Sidebar() {
         <NavLink to="/admin-panel/upload" className={linkClass}>
           Upload Papers
         </NavLink>
-
+<Link to="/admin/requests">Admin Requests</Link>
         <NavLink to="/admin-panel/logs" className={linkClass}>
           Activity Logs
         </NavLink>
