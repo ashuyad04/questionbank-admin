@@ -3,58 +3,42 @@ import { supabase } from "../integrations/supabase/client";
 import { useEffect, useState } from "react";
 
 export default function ProtectedRoute({ children, superAdminOnly }) {
-  const [loading, setLoading] = useState(true);
   const [allowed, setAllowed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const check = async () => {
-      // Get current user session
-      const {
-        data: { user }
-      } = await supabase.auth.getUser();
+    checkAccess();
+  }, []);
 
-      if (!user) {
-        setAllowed(false);
-        setLoading(false);
-        return;
-      }
+  const checkAccess = async () => {
+    const { data: session } = await supabase.auth.getUser();
 
-      // Check if the user exists in admins table
-      const { data: adminData, error } = await supabase
-        .from("admins")
-        .select("*")
-        .eq("uid", user.id);
+    const user = session?.user;
+    if (!user) {
+      return setLoaded(true);
+    }
 
-      if (error || adminData.length === 0) {
-        setAllowed(false);
-        setLoading(false);
-        return;
-      }
+    // Check admin in DB
+    const { data: admin } = await supabase
+      .from("admins")
+      .select("*")
+      .eq("uid", user.id)
+      .single();
 
-      const admin = adminData[0];
+    if (!admin) {
+      return setLoaded(true);
+    }
 
-      // If route requires super admin
-      if (superAdminOnly && admin.role !== "super_admin") {
-        setAllowed(false);
-        setLoading(false);
-        return;
-      }
+    // AUTH LOGIC FIXED — now checks "role" column
+    if (superAdminOnly && admin.role !== "super") {
+      return setLoaded(true);
+    }
 
-      // All good
-      setAllowed(true);
-      setLoading(false);
-    };
+    setAllowed(true);
+    setLoaded(true);
+  };
 
-    check();
-  }, [superAdminOnly]);
-
-  if (loading) {
-    return (
-      <div style={{ padding: 40, textAlign: "center" }}>
-        Loading...
-      </div>
-    );
-  }
+  if (!loaded) return null; // prevent flashing
 
   return allowed ? children : <Navigate to="/no-access" />;
 }
