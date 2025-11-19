@@ -1,72 +1,34 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../integrations/supabase/client";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
 
 export default function Dashboard() {
-  const [admin, setAdmin] = useState(null);
-  const nav = useNavigate();
-
-  useEffect(() => {
-    loadAdmin();
-  }, []);
-
-  const loadAdmin = async () => {
-    // 1 — Get logged in user
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return nav("/"); // redirect to login
-    }
-
-    // 2 — Fetch admin record
-    const { data, error } = await supabase
-      .from("admins")
-      .select("*")
-      .eq("email", user.email)
-      .single();
-
-    if (error || !data) {
-      return nav("/no-access");
-    }
-
-    setAdmin(data);
-  };
-
-  const logout = async () => {
-    await supabase.auth.signOut();
-    nav("/");
-  };
-
-  if (!admin) return <p style={{ padding: 40 }}>Loading...</p>;
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="max-w-lg w-full">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">
-            Welcome, {admin.full_name}
-          </CardTitle>
-        </CardHeader>
+    <div>
+      <h1 className="text-2xl font-bold">Welcome, Super Admin</h1>
 
-        <CardContent className="space-y-4">
-          <p><strong>Email:</strong> {admin.email}</p>
-          <p><strong>Role:</strong> {admin.role}</p>
-          <p><strong>Course:</strong> {admin.course || "N/A"}</p>
-          <p><strong>Batch:</strong> {admin.batch || "N/A"}</p>
+      <p>Email: { /* your logged-in email */ }</p>
+      <p>Role: super</p>
+      <p>Course: N/A</p>
+      <p>Batch: N/A</p>
 
-          {admin.role === "super" && (
-            <Button className="w-full" onClick={() => nav("/admin-panel")}>
-              Open Super Admin Panel
-            </Button>
-          )}
+      <div className="flex gap-4 mt-4">
+        <Button
+          onClick={() => navigate("/admin/requests")}
+          variant="default"
+        >
+          Open Super Admin Panel
+        </Button>
 
-          <Button variant="outline" className="w-full" onClick={logout}>
-            Logout
-          </Button>
-        </CardContent>
-      </Card>
+        <Button
+          onClick={() => navigate("/admin/login")}
+          variant="outline"
+        >
+          Logout
+        </Button>
+      </div>
     </div>
   );
 }
